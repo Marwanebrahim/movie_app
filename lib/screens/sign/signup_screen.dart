@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:movie_app/helpers/image_helper.dart';
 import 'package:movie_app/screens/home_screen.dart';
+import 'package:movie_app/screens/sign/login_screen.dart';
 import 'package:movie_app/styles/app_colors.dart';
 import 'package:movie_app/styles/app_text_styles.dart';
 import 'package:movie_app/widgets/custom_button_widget.dart';
 import 'package:movie_app/widgets/custom_text_field.dart';
+import 'package:movie_app/widgets/linked_text.dart';
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
@@ -84,7 +86,7 @@ class SignupScreen extends StatelessWidget {
                             if (p1.length > 50) {
                               return 'Full name must be less than 50 characters';
                             }
-            
+
                             return null;
                           },
                           labelText: 'Full Name',
@@ -186,6 +188,17 @@ class SignupScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                ),
+                SizedBox(height: 18),
+                LinkedText(
+                  text1: "Already have an account?",
+                  text2: "Sign In",
+                  ontap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
                 ),
               ],
             ),

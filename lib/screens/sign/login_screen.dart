@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:movie_app/helpers/image_helper.dart';
 import 'package:movie_app/screens/home_screen.dart';
+import 'package:movie_app/screens/sign/signup_screen.dart';
 import 'package:movie_app/styles/app_colors.dart';
 import 'package:movie_app/styles/app_text_styles.dart';
 import 'package:movie_app/widgets/custom_button_widget.dart';
 import 'package:movie_app/widgets/custom_text_field.dart';
+import 'package:movie_app/widgets/linked_text.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -140,6 +142,17 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+              ),
+              SizedBox(height: 18),
+              LinkedText(
+                text1: "Don't have an account?",
+                text2: 'Sign Up',
+                ontap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignupScreen()),
+                  );
+                },
               ),
             ],
           ),
