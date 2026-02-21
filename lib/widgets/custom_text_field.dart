@@ -44,7 +44,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           width: 270,
           child: TextFormField(
             controller: widget.controller,
-            obscureText: widget.isPassword && !isPasswordVisible,
+            obscureText:  widget.isPassword && isPasswordVisible,
             validator: widget.validation,
             style: AppTextStyles.regular16.copyWith(
               color: AppColors.borderSideColor,
