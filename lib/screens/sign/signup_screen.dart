@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:movie_app/cubit/auth/user_cubit.dart';
+import 'package:movie_app/cubit/auth/user_state.dart';
 import 'package:movie_app/helpers/image_helper.dart';
 import 'package:movie_app/screens/home_screen.dart';
 import 'package:movie_app/screens/sign/login_screen.dart';
@@ -9,198 +12,245 @@ import 'package:movie_app/widgets/custom_button_widget.dart';
 import 'package:movie_app/widgets/custom_text_field.dart';
 import 'package:movie_app/widgets/linked_text.dart';
 
-class SignupScreen extends StatelessWidget {
-  SignupScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+
   final TextEditingController _fullNameController = TextEditingController();
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
+
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              spacing: 8,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(ImageHelper.logoImage),
-                Text(
-                  'Movie Box',
-                  style: AppTextStyles.bold24.copyWith(
-                    color: AppColors.whiteTextColor,
-                  ),
-                ),
-                Text(
-                  'Your ultimate movie discovery platform',
-                  style: AppTextStyles.regular14.copyWith(
-                    color: AppColors.grayTextColor,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Container(
-                  width: 320,
-                  // height: 320,
-                  decoration: BoxDecoration(
-                    color: AppColors.appBarColor,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18.0,
+    return BlocListener<UserAuthCubit, UserAuthState>(
+      listener: (context, state) {
+        if (state is UserAuthSuccess) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        } else if (state is UserAuthFailure) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Scaffold(
+          backgroundColor: AppColors.backgroundColor,
+          body: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 8,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(ImageHelper.logoImage),
+                  Text(
+                    'Movie Box',
+                    style: AppTextStyles.bold24.copyWith(
+                      color: AppColors.whiteTextColor,
                     ),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Create account",
-                          style: AppTextStyles.regular20.copyWith(
-                            color: AppColors.whiteTextColor,
-                          ),
-                        ),
-                        Text(
-                          "Sign up to start discovering amazing movies",
-                          style: AppTextStyles.regular16.copyWith(
-                            color: AppColors.grayTextColor,
-                          ),
-                        ),
-                        SizedBox(height: 16),
-                        CustomTextField(
-                          controller: _fullNameController,
-                          hintText: Text(
-                            "Enter your full name",
-                            style: AppTextStyles.regular14.copyWith(
-                              color: AppColors.borderSideColor,
+                  ),
+                  Text(
+                    'Your ultimate movie discovery platform',
+                    style: AppTextStyles.regular14.copyWith(
+                      color: AppColors.grayTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Container(
+                    width: 320,
+                    // height: 320,
+                    decoration: BoxDecoration(
+                      color: AppColors.appBarColor,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 18.0,
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Create account",
+                            style: AppTextStyles.regular20.copyWith(
+                              color: AppColors.whiteTextColor,
                             ),
                           ),
-                          isPassword: false,
-                          validation: (String? p1) {
-                            if (p1 == null || p1.isEmpty) {
-                              return 'Full name is required';
-                            }
-                            if (p1.length > 50) {
-                              return 'Full name must be less than 50 characters';
-                            }
+                          Text(
+                            "Sign up to start discovering amazing movies",
+                            style: AppTextStyles.regular16.copyWith(
+                              color: AppColors.grayTextColor,
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          CustomTextField(
+                            controller: _fullNameController,
+                            hintText: Text(
+                              "Enter your full name",
+                              style: AppTextStyles.regular14.copyWith(
+                                color: AppColors.borderSideColor,
+                              ),
+                            ),
+                            isPassword: false,
+                            validation: (String? p1) {
+                              if (p1 == null || p1.isEmpty) {
+                                return 'Full name is required';
+                              }
+                              if (p1.length > 50) {
+                                return 'Full name must be less than 50 characters';
+                              }
 
-                            return null;
-                          },
-                          labelText: 'Full Name',
-                        ),
-                        SizedBox(height: 10),
-                        CustomTextField(
-                          controller: _emailController,
-                          hintText: Text(
-                            "Enter your email",
-                            style: AppTextStyles.regular14.copyWith(
-                              color: AppColors.borderSideColor,
-                            ),
+                              return null;
+                            },
+                            labelText: 'Full Name',
                           ),
-                          isPassword: false,
-                          validation: (String? p1) {
-                            if (p1 == null || p1.isEmpty) {
-                              return 'Email is required';
-                            }
-                            if (!RegExp(
-                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                            ).hasMatch(p1)) {
-                              return 'Please enter a valid email address';
-                            }
-                            if (p1.length > 50) {
-                              return 'Email must be less than 50 characters';
-                            }
-                            return null;
-                          },
-                          labelText: 'Email',
-                        ),
-                        SizedBox(height: 10),
-                        CustomTextField(
-                          controller: _passwordController,
-                          hintText: Text(
-                            "Enter your password",
-                            style: AppTextStyles.regular14.copyWith(
-                              color: AppColors.borderSideColor,
+                          SizedBox(height: 10),
+                          CustomTextField(
+                            controller: _emailController,
+                            hintText: Text(
+                              "Enter your email",
+                              style: AppTextStyles.regular14.copyWith(
+                                color: AppColors.borderSideColor,
+                              ),
                             ),
+                            isPassword: false,
+                            validation: (String? p1) {
+                              if (p1 == null || p1.isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!RegExp(
+                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              ).hasMatch(p1)) {
+                                return 'Please enter a valid email address';
+                              }
+                              if (p1.length > 50) {
+                                return 'Email must be less than 50 characters';
+                              }
+                              return null;
+                            },
+                            labelText: 'Email',
                           ),
-                          isPassword: true,
-                          validation: (String? p1) {
-                            if (p1 == null || p1.isEmpty) {
-                              return 'Password is required';
-                            }
-                            if (p1.length < 8) {
-                              return 'Password must be at least 8 characters';
-                            }
-                            if (p1.length > 20) {
-                              return 'Password must be less than 20 characters';
-                            }
-                            return null;
-                          },
-                          labelText: 'Password',
-                        ),
-                        SizedBox(height: 10),
-                        CustomTextField(
-                          controller: _confirmPasswordController,
-                          hintText: Text(
-                            "Confirm your password",
-                            style: AppTextStyles.regular14.copyWith(
-                              color: AppColors.borderSideColor,
+                          SizedBox(height: 10),
+                          CustomTextField(
+                            controller: _passwordController,
+                            hintText: Text(
+                              "Enter your password",
+                              style: AppTextStyles.regular14.copyWith(
+                                color: AppColors.borderSideColor,
+                              ),
                             ),
+                            isPassword: true,
+                            validation: (String? p1) {
+                              if (p1 == null || p1.isEmpty) {
+                                return 'Password is required';
+                              }
+                              if (p1.length < 8) {
+                                return 'Password must be at least 8 characters';
+                              }
+                              if (p1.length > 20) {
+                                return 'Password must be less than 20 characters';
+                              }
+                              return null;
+                            },
+                            labelText: 'Password',
                           ),
-                          isPassword: true,
-                          validation: (String? p1) {
-                            if (p1 == null || p1.isEmpty) {
-                              return 'Confirm password is required';
-                            }
-                            if (p1 != _passwordController.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                          labelText: 'Confirm Password',
-                        ),
-                        SizedBox(height: 14),
-                        CustomButtonWidget(
-                          width: 270,
-                          height: 38,
-                          borderRadius: 10,
-                          color: AppColors.buttonsColor,
-                          text: Text(
-                            "Sign Up",
-                            style: AppTextStyles.regular14.copyWith(
-                              color: AppColors.backgroundColor,
+                          SizedBox(height: 10),
+                          CustomTextField(
+                            controller: _confirmPasswordController,
+                            hintText: Text(
+                              "Confirm your password",
+                              style: AppTextStyles.regular14.copyWith(
+                                color: AppColors.borderSideColor,
+                              ),
                             ),
+                            isPassword: true,
+                            validation: (String? p1) {
+                              if (p1 == null || p1.isEmpty) {
+                                return 'Confirm password is required';
+                              }
+                              if (p1 != _passwordController.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+                            labelText: 'Confirm Password',
                           ),
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ],
+                          SizedBox(height: 14),
+                          CustomButtonWidget(
+                            width: 270,
+                            height: 38,
+                            borderRadius: 10,
+                            color: AppColors.buttonsColor,
+                            text: BlocBuilder<UserAuthCubit, UserAuthState>(
+                              builder: (BuildContext context, state) {
+                                if (state is UserAuthLoading) {
+                                  return SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.backgroundColor,
+                                    ),
+                                  );
+                                }
+                                return Text(
+                                  "Sign Up",
+                                  style: AppTextStyles.regular14.copyWith(
+                                    color: AppColors.backgroundColor,
+                                  ),
+                                );
+                              },
+                            ),
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<UserAuthCubit>().signUp(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                  name: _fullNameController.text,
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 18),
-                LinkedText(
-                  text1: "Already have an account?",
-                  text2: "Sign In",
-                  ontap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                ),
-              ],
+                  SizedBox(height: 18),
+                  LinkedText(
+                    text1: "Already have an account?",
+                    text2: "Sign In",
+                    ontap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
