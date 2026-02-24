@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:movie_app/cubit/auth/user_cubit.dart';
 import 'package:movie_app/cubit/auth/user_state.dart';
 import 'package:movie_app/helpers/image_helper.dart';
-import 'package:movie_app/screens/home_screen.dart';
+import 'package:movie_app/screens/app_layout.dart';
 import 'package:movie_app/screens/sign/signup_screen.dart';
 import 'package:movie_app/styles/app_colors.dart';
 import 'package:movie_app/styles/app_text_styles.dart';
@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is UserAuthSuccess) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => AppLayout()),
           );
         } else if (state is UserAuthFailure) {
           debugPrint("fail");
@@ -52,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Form(
         key: _formKey,
         child: Scaffold(
-          backgroundColor: AppColors.backgroundColor,
           body: Center(
             child: SingleChildScrollView(
               child: Column(
