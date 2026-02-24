@@ -1,6 +1,6 @@
 import 'package:movie_app/models/movie.dart';
 
-class MovieStates {}
+sealed class MovieStates {}
 
 class MovieInitialState extends MovieStates {}
 

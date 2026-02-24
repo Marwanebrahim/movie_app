@@ -1,6 +1,6 @@
 import 'package:movie_app/models/user.dart';
 
-class UserAuthState {}
+sealed class UserAuthState {}
 
 class UserAuthInitial extends UserAuthState {}
 

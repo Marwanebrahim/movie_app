@@ -22,14 +22,13 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _fullNameController = .new();
 
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = .new();
 
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = .new();
 
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = .new();
 
   @override
   void dispose() {
