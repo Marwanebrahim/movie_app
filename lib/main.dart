@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           scaffoldBackgroundColor: AppColors.backgroundColor,
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            type: BottomNavigationBarType.fixed,
             backgroundColor: AppColors.appBarColor,
             selectedItemColor: AppColors.buttonsColor,
             unselectedItemColor: AppColors.grayTextColor,
