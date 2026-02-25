@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:movie_app/cubit/auth/user_cubit.dart';
 import 'package:movie_app/cubit/navigation%20bar/navigation_cubit.dart';
-import 'package:movie_app/helpers/image_helper.dart';
 
 import 'package:movie_app/styles/app_colors.dart';
 import 'package:movie_app/styles/app_text_styles.dart';
@@ -38,13 +36,6 @@ class AppLayout extends StatelessWidget {
                   color: AppColors.whiteTextColor,
                 ),
               ),
-              Spacer(),
-              IconButton(
-                onPressed: () {
-                  context.read<UserAuthCubit>().logout();
-                },
-                icon: Icon(Icons.search, color: AppColors.whiteTextColor),
-              ),
             ],
           ),
         ),
@@ -62,7 +53,7 @@ class AppLayout extends StatelessWidget {
               },
               items: [
                 BottomNavigationBarItem(
-                  icon: SvgPicture.asset(ImageHelper.homeIcon),
+                  icon: Icon(Icons.home_outlined),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(

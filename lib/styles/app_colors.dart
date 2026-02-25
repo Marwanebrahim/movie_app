@@ -9,4 +9,5 @@ class AppColors {
   static const Color borderSideColor = Color(0xFF94A3B8);
   static const Color errorBorderColor = Color(0xFFEF4444);
   static const Color buttonsColor = Color(0xFFA855F7);
+  static const Color containerColor = Color(0xFF374151);
 }
