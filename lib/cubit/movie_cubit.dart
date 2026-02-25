@@ -14,7 +14,10 @@ class MovieCubit extends Cubit<MovieStates> {
     try {
       final response = movieService.fetchPopularMovies(dio);
       response.then((moviesData) {
-        List<Movie> movies = moviesData
+        if (moviesData == null) {
+          emit(MovieErrorState(errorMessage: "Check the connection"));
+        }
+        List<Movie> movies = moviesData!
             .map((movieJson) => Movie.fromJson(movieJson))
             .toList();
         emit(MovieSuccessState(movies: movies));
