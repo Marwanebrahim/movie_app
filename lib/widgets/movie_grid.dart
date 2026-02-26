@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/movie.dart';
+import 'package:movie_app/screens/movie_details.dart';
 import 'package:movie_app/styles/app_colors.dart';
 import 'package:movie_app/widgets/movie_card.dart';
 
@@ -14,7 +15,7 @@ class MovieGrid extends StatelessWidget {
       child: Container(
         color: AppColors.backgroundColor,
         child: GridView.builder(
-          padding: EdgeInsets.only(top: 16,left: 6,right: 6),
+          padding: EdgeInsets.only(top: 16, left: 6, right: 6),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 12,
@@ -26,7 +27,17 @@ class MovieGrid extends StatelessWidget {
 
           itemBuilder: (context, index) {
             final movie = movies[index];
-            return MovieCard(movie: movie);
+            return MovieCard(
+              movie: movie,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MovieDetails(movie: movie),
+                  ),
+                );
+              },
+            );
           },
         ),
       ),
