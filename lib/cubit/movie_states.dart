@@ -15,3 +15,5 @@ class MovieErrorState extends MovieStates {
   final String errorMessage;
   MovieErrorState({required this.errorMessage});
 }
+
+

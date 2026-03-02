@@ -1,7 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/cubit/movie_cubit.dart';
 import 'package:movie_app/widgets/movie_builder.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,9 +16,6 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocProvider(
-      create: (context) => MovieCubit(dio: Dio())..fetchMovies(),
-      child: MovieBuilder(),
-    );
+    return MovieBuilder();
   }
 }

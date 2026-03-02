@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/cubit/favourite/favourite_cubit.dart';
+import 'package:movie_app/cubit/favourite/favourite_state.dart';
+import 'package:movie_app/cubit/movie_cubit.dart';
 import 'package:movie_app/models/movie.dart';
 import 'package:movie_app/screens/movie_details.dart';
 import 'package:movie_app/styles/app_colors.dart';
@@ -27,13 +31,30 @@ class MovieGrid extends StatelessWidget {
 
           itemBuilder: (context, index) {
             final movie = movies[index];
+            final favMovies =
+                context.read<FavouriteCubit>().state is FavouriteLoaded
+                ? (context.read<FavouriteCubit>().state as FavouriteLoaded)
+                      .favoriteMovies
+                : [];
+
+            for (var movie in movies) {
+              movie.isFavorite = favMovies.any((fav) => fav.id == movie.id);
+            }
             return MovieCard(
               movie: movie,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MovieDetails(movie: movie),
+                    builder: (_) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(
+                          value: context.read<FavouriteCubit>(),
+                        ),
+                        BlocProvider.value(value: context.read<MovieCubit>()),
+                      ],
+                      child: MovieDetails(movie: movie),
+                    ),
                   ),
                 );
               },

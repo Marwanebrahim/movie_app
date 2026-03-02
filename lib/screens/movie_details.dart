@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:movie_app/cubit/favourite/favourite_cubit.dart';
+import 'package:movie_app/cubit/favourite/favourite_state.dart';
 import 'package:movie_app/helpers/image_helper.dart';
 import 'package:movie_app/models/movie.dart';
 import 'package:movie_app/styles/app_colors.dart';
 import 'package:movie_app/styles/app_text_styles.dart';
 import 'package:movie_app/widgets/custom_button_widget.dart';
 
-class MovieDetails extends StatelessWidget {
+class MovieDetails extends StatefulWidget {
   const MovieDetails({super.key, required this.movie});
   final Movie movie;
+
+  @override
+  State<MovieDetails> createState() => _MovieDetailsState();
+}
+
+class _MovieDetailsState extends State<MovieDetails> {
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +42,7 @@ class MovieDetails extends StatelessWidget {
                 height: 260,
                 width: double.infinity,
                 child: Image.network(
-                  'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                  'https://image.tmdb.org/t/p/w500${widget.movie.posterPath}',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -60,7 +70,7 @@ class MovieDetails extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      movie.title ?? "No Title",
+                      widget.movie.title ?? "No Title",
                       style: AppTextStyles.bold28.copyWith(
                         color: AppColors.whiteTextColor,
                       ),
@@ -70,7 +80,7 @@ class MovieDetails extends StatelessWidget {
                       spacing: 16,
                       children: [
                         Text(
-                          movie.releaseDate?.substring(0, 4) ?? "999",
+                          widget.movie.releaseDate?.substring(0, 4) ?? "999",
                           style: AppTextStyles.regular16.copyWith(
                             color: AppColors.whiteTextColor,
                           ),
@@ -119,7 +129,7 @@ class MovieDetails extends StatelessWidget {
                 SvgPicture.asset(ImageHelper.starIcon, width: 22, height: 22),
                 SizedBox(width: 4),
                 Text(
-                  movie.voteAverage?.toInt().toString() ?? "0",
+                  widget.movie.voteAverage?.toInt().toString() ?? "0",
                   style: AppTextStyles.semibold18.copyWith(
                     color: AppColors.whiteTextColor,
                   ),
@@ -138,28 +148,51 @@ class MovieDetails extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              CustomButtonWidget(
-                width: 152,
-                height: 36,
-                borderRadius: 14,
-                color: AppColors.buttonsColor,
-                text: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.favorite_border_outlined,
-                      color: AppColors.whiteTextColor,
+              // Replace the entire "Add to Favorites" CustomButtonWidget with:
+              BlocBuilder<FavouriteCubit, FavouriteState>(
+                builder: (context, favState) {
+                  final isFav = favState is FavouriteLoaded
+                      ? favState.favoriteMovies.any(
+                          (m) => m.id == widget.movie.id,
+                        )
+                      : widget.movie.isFavorite;
+
+                  return CustomButtonWidget(
+                    width: 152,
+                    height: 36,
+                    borderRadius: 14,
+                    color: AppColors.buttonsColor,
+                    text: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          isFav
+                              ? Icons.favorite
+                              : Icons.favorite_border_outlined,
+                          color: AppColors.whiteTextColor,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Add to Favorites",
+                          style: AppTextStyles.regular16.copyWith(
+                            color: AppColors.whiteTextColor,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Add to Favorites",
-                      style: AppTextStyles.regular16.copyWith(
-                        color: AppColors.whiteTextColor,
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: () {},
+                    onTap: () {
+                      if (isFav) {
+                        context.read<FavouriteCubit>().removeFromFavorite(
+                          widget.movie,
+                        );
+                      } else {
+                        context.read<FavouriteCubit>().addToFavorites(
+                          widget.movie,
+                        );
+                      }
+                    },
+                  );
+                },
               ),
               CustomButtonWidget(
                 width: 152,
@@ -197,7 +230,7 @@ class MovieDetails extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  movie.overview ?? "",
+                  widget.movie.overview ?? "",
                   style: AppTextStyles.regular18.copyWith(
                     color: AppColors.grayTextColor,
                   ),
