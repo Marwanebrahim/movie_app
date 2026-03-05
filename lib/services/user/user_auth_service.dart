@@ -29,7 +29,12 @@ class UserAuthService {
     required String email,
     required String password,
   }) async {
-    final user = User(email: email, fullName: name, password: password);
+    final user = User(
+      email: email,
+      fullName: name,
+      password: password,
+      createdTime: DateTime.now(),
+    );
     try {
       await Hive.box(userBox).put(email, user.toMap());
       await Hive.box(currentUserbox).put("currentUser", email);
