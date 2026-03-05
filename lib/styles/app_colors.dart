@@ -10,4 +10,8 @@ class AppColors {
   static const Color errorBorderColor = Color(0xFFEF4444);
   static const Color buttonsColor = Color(0xFFA855F7);
   static const Color containerColor = Color(0xFF374151);
+  static const Gradient containerGradientColor = LinearGradient(
+    colors: [Color(0xffAD46FF), Color(0xff00BBA7) ,],
+    begin: AlignmentGeometry.topLeft,end: AlignmentGeometry.bottomRight
+  );
 }

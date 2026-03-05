@@ -67,4 +67,17 @@ class UserAuthCubit extends Cubit<UserAuthState> {
       emit(UserAuthFailure(errorMessage: e.toString()));
     }
   }
+
+  Future<void> getCurrentUser() async {
+    try {
+      final user = await UserAuthService().getCurrentUser();
+      if (user != null) {
+        emit(UserAuthLoggedIn(user: user));
+      } else {
+        emit(UserAuthFailure(errorMessage: "User not found"));
+      }
+    } catch (e) {
+      emit(UserAuthFailure(errorMessage: e.toString()));
+    }
+  }
 }
