@@ -14,8 +14,8 @@ class SearchService {
           'page': 1,
         },
       );
-      List<Movie> movies = response.data['results']
-          .map((e) => Movie.fromJson(e))
+      final List<Movie> movies = (response.data['results'] as List)
+          .map((e) => Movie.fromJson(Map<String, dynamic>.from(e)))
           .toList();
 
       return movies;
