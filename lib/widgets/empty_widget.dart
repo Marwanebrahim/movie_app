@@ -7,7 +7,7 @@ class EmptyWidget extends StatelessWidget {
     super.key,
     required this.icon,
     this.buttonText,
-    required this.onTap,
+    this.onTap,
     required this.isFav,
     required this.firstText,
     this.secondText,
@@ -17,11 +17,11 @@ class EmptyWidget extends StatelessWidget {
   final Widget firstText;
   final Widget? secondText;
   final Widget? buttonText;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return SizedBox.expand(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
@@ -38,7 +38,7 @@ class EmptyWidget extends StatelessWidget {
                   borderRadius: 8,
                   color: AppColors.buttonsColor,
                   text: buttonText!,
-                  onTap: onTap,
+                  onTap: onTap!,
                 )
               : secondText,
         ],

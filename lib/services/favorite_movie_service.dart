@@ -10,6 +10,7 @@ class FavoriteMovieService {
           .toList();
       return favMovies;
     } catch (e) {
+      Hive.box(_boxName).clear();
       return [];
     }
   }

@@ -13,15 +13,15 @@ import 'navigation bar screens/profile_screen.dart';
 import 'navigation bar screens/search_screen.dart';
 
 class AppLayout extends StatelessWidget {
-  AppLayout({super.key});
-  final List<Widget> _screens = [
+ const AppLayout({super.key});
+  @override
+  Widget build(BuildContext context) {
+  final List<Widget> screens = [
     HomeScreen(),
     SearchScreen(),
     FavoritesScreen(),
     ProfileScreen(),
   ];
-  @override
-  Widget build(BuildContext context) {
     return BlocListener<UserAuthCubit, UserAuthState>(
       listener: (context, state) {
         if (state is UserAuthInitial) {
@@ -50,7 +50,7 @@ class AppLayout extends StatelessWidget {
         ),
         body: BlocBuilder<NavigationCubit, int>(
           builder: (context, currentIndex) {
-            return IndexedStack(index: currentIndex, children: _screens);
+            return IndexedStack(index: currentIndex, children: screens);
           },
         ),
         bottomNavigationBar: BlocBuilder<NavigationCubit, int>(

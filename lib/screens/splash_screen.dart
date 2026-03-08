@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
-        } else {
+        } else if (state is UserLoggedOut) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

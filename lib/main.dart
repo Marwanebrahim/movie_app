@@ -6,6 +6,7 @@ import 'package:movie_app/cubit/auth/user_cubit.dart';
 import 'package:movie_app/cubit/favourite/favourite_cubit.dart';
 import 'package:movie_app/cubit/movie_cubit.dart';
 import 'package:movie_app/cubit/navigation%20bar/navigation_cubit.dart';
+import 'package:movie_app/cubit/search/search_cubit.dart';
 import 'package:movie_app/screens/splash_screen.dart';
 import 'package:movie_app/styles/app_colors.dart';
 
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => NavigationCubit()),
         BlocProvider(create: (_) => FavouriteCubit()..getFavoriteMovies()),
         BlocProvider(create: (_) => MovieCubit()..fetchMovies(dio: Dio())),
+        BlocProvider(create: (_) => SearchCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
