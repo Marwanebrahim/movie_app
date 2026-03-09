@@ -18,10 +18,7 @@ void main(List<String> args) async {
   await Hive.openBox('users');
   await Hive.openBox('currentUser');
   await Hive.openBox('favoriteMovie');
-  WidgetsFlutterBinding.ensureInitialized();
-await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 

@@ -7,10 +7,10 @@ class FavouriteCubit extends Cubit<FavouriteState> {
   FavouriteCubit() : super(FavouriteIntialState());
   final FavoriteMovieService favoriteMovieService = .new();
 
-  void getFavoriteMovies() {
+  Future<void> getFavoriteMovies() async {
     emit(FavouriteLoading());
     try {
-      final movies = favoriteMovieService.getFavoriteMovies();
+      final movies = await favoriteMovieService.getFavoriteMovies();
       emit(FavouriteLoaded(favoriteMovies: movies));
     } catch (e) {
       emit(FavouriteErrorState(errorMessage: "failed to get movies"));

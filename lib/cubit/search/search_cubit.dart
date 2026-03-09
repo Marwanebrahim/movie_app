@@ -26,7 +26,7 @@ class SearchCubit extends Cubit<SearchState> {
         return;
       }
 
-      final favourites = _favoriteService.getFavoriteMovies();
+      final favourites = await _favoriteService.getFavoriteMovies();
 
       for (var movie in movies) {
         movie.isFavorite = favourites.any((f) => f.id == movie.id);

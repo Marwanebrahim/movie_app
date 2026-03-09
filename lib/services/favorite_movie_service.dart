@@ -1,23 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movie_app/models/movie.dart';
 
 class FavoriteMovieService {
-  final String _boxName = "favoriteMovie";
-  List<Movie> getFavoriteMovies() {
+  final String _collectionName = "favoriteMovie";
+  final db = FirebaseFirestore.instance;
+  final userEmail = Hive.box("currentUser").get("currentUser");
+  Future<List<Movie>> getFavoriteMovies() async {
     try {
-      final favMovies = Hive.box(_boxName).values
-          .map((e) => Movie.fromJson(Map<String, dynamic>.from(e as Map)))
+      if (userEmail == null) return [];
+      final favMovies = await db
+          .collection(_collectionName)
+          .doc(userEmail)
+          .collection("movies")
+          .get();
+      return favMovies.docs
+          .map((e) => Movie.fromJson(Map<String, dynamic>.from(e.data())))
           .toList();
-      return favMovies;
     } catch (e) {
-      Hive.box(_boxName).clear();
       return [];
     }
   }
 
   Future<Movie?> addMovieToFavorite(Movie movie) async {
     try {
-      await Hive.box(_boxName).put(movie.id, movie.toMap());
+      if (userEmail == null) return null;
+
+      await db
+          .collection(_collectionName)
+          .doc(userEmail)
+          .collection("movies")
+          .doc(movie.id.toString())
+          .set(movie.toMap());
       return movie;
     } catch (e) {
       return null;
@@ -26,7 +40,12 @@ class FavoriteMovieService {
 
   Future<bool> removeFromFavoriteList(Movie movie) async {
     try {
-      await Hive.box(_boxName).delete(movie.id);
+      await db
+          .collection(_collectionName)
+          .doc(userEmail)
+          .collection("movies")
+          .doc(movie.id.toString())
+          .delete();
       return true;
     } catch (e) {
       return false;
