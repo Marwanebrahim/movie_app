@@ -1,21 +1,26 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:movie_app/models/user.dart';
 
 class UserAuthService {
-  final String currentUserbox = "currentUser";
-  final String userBox = "users";
-
-  // تحقق من البريد + الباسورد وارجع المستخدم
+  final String userCollection = "users";
+  final auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
   Future<User?> getUser({
     required String email,
     required String password,
   }) async {
     try {
-      final box = Hive.box(userBox);
-      final data = box.get(email);
-      if (data != null && data is Map) {
-        final user = User.fromMap(Map<String, dynamic>.from(data));
-        if (user.password == password) return user;
+      final userCredential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = await db
+          .collection(userCollection)
+          .doc(userCredential.user!.uid)
+          .get();
+      if (user.exists) {
+        return User.fromMap(user.data() as Map<String, dynamic>);
       }
       return null;
     } catch (e) {
@@ -23,37 +28,43 @@ class UserAuthService {
     }
   }
 
-  // اضف مستخدم جديد
   Future<User?> addUser({
     required String name,
     required String email,
     required String password,
   }) async {
-    final user = User(
-      email: email,
-      fullName: name,
-      password: password,
-      createdTime: DateTime.now(),
-    );
     try {
-      await Hive.box(userBox).put(email, user.toMap());
-      await Hive.box(currentUserbox).put("currentUser", email);
+      final user = User(
+        email: email,
+        fullName: name,
+        password: password,
+        createdTime: DateTime.now(),
+      );
+      final userCredential = await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await db
+          .collection(userCollection)
+          .doc(userCredential.user!.uid)
+          .set(user.toMap());
       return user;
     } catch (e) {
       return null;
     }
   }
 
-  // رجع المستخدم الحالي من Hive
   Future<User?> getCurrentUser() async {
     try {
-      final currentEmail =
-          Hive.box(currentUserbox).get("currentUser") as String?;
-      if (currentEmail == null) return null;
-
-      final data = Hive.box(userBox).get(currentEmail);
-      if (data != null && data is Map) {
-        return User.fromMap(Map<String, dynamic>.from(data));
+      final user = auth.currentUser;
+      if (user != null) {
+        final userData = await db
+            .collection(userCollection)
+            .doc(user.uid)
+            .get();
+        if (userData.exists) {
+          return User.fromMap(userData.data() as Map<String, dynamic>);
+        }
       }
       return null;
     } catch (e) {
@@ -61,13 +72,7 @@ class UserAuthService {
     }
   }
 
-  // ضع المستخدم الحالي
-  Future<void> setCurrentUser(String email) async {
-    await Hive.box(currentUserbox).put("currentUser", email);
-  }
-
-  // احذف المستخدم الحالي
   Future<void> deleteCurrentUser() async {
-    await Hive.box(currentUserbox).delete("currentUser");
+    await auth.signOut();
   }
 }

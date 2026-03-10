@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:movie_app/cubit/auth/user_cubit.dart';
 import 'package:movie_app/cubit/favourite/favourite_cubit.dart';
 import 'package:movie_app/cubit/movie_cubit.dart';
@@ -14,10 +13,6 @@ import 'package:movie_app/styles/app_colors.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox('users');
-  await Hive.openBox('currentUser');
-  await Hive.openBox('favoriteMovie');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }

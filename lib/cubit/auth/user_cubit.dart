@@ -48,7 +48,6 @@ class UserAuthCubit extends Cubit<UserAuthState> {
         password: password,
       );
       if (user != null) {
-        await UserAuthService().setCurrentUser(email);
         emit(UserAuthSuccess(user: user));
       } else {
         emit(UserAuthFailure(errorMessage: "Invalid credentials"));

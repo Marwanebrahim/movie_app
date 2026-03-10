@@ -1,12 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/models/movie.dart';
 
 class FavoriteMovieService {
   final String _collectionName = "favoriteMovie";
   final db = FirebaseFirestore.instance;
-  final userEmail = Hive.box("currentUser").get("currentUser");
+
+  String? getUserEmail() {
+    final user = FirebaseAuth.instance.currentUser?.email;
+    return user;
+  }
+
   Future<List<Movie>> getFavoriteMovies() async {
+    final userEmail = getUserEmail();
+
     try {
       if (userEmail == null) return [];
       final favMovies = await db
@@ -23,6 +30,7 @@ class FavoriteMovieService {
   }
 
   Future<Movie?> addMovieToFavorite(Movie movie) async {
+    final userEmail = getUserEmail();
     try {
       if (userEmail == null) return null;
 
@@ -39,6 +47,7 @@ class FavoriteMovieService {
   }
 
   Future<bool> removeFromFavoriteList(Movie movie) async {
+    final userEmail = getUserEmail();
     try {
       await db
           .collection(_collectionName)
